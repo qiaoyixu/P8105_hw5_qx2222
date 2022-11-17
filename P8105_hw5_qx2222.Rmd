@@ -82,6 +82,15 @@ homicide = homicide %>%
 homicide
 ```
 
+```{r}
+homicide_table = homicide %>%
+  group_by(city_state) %>%
+  summarise(total_homicide = n(),
+            number_unsolved = sum(homicide_status == "unsolved")) %>%
+  knitr::kable(col.names = c("City, State", "Total number of homicide", "Number of unsolved homicide"))
+
+homicide_table
+```
 
 
 
