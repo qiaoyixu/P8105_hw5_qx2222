@@ -57,6 +57,8 @@ This plot suggests high within-subject correlation -- subjects who start above a
 
 
 ## Problem 2
+
+### Import homicide data
 ```{r}
 homicide = read_csv("data/homicide-data.csv") #import 'homicide' data
 
@@ -64,7 +66,21 @@ homicide
 ```
 
 
+### Describe the raw data:
 
+In the raw homicide data, there are `r nrow(homicide)` observations and `r ncol(homicide)` variables. 
+
+
+### Create new variables
+```{r}
+homicide = homicide %>%
+  mutate(city_state = str_c(city, ",", state)) %>%
+  mutate(homicide_status = if_else(disposition == "Closed without arrest", "unsolved",
+                                   if_else(disposition == "Open/No arrest", "unsolved",
+                                           if_else(disposition == "Closed by arrest", "solved", NA_character_))))
+
+homicide
+```
 
 
 
