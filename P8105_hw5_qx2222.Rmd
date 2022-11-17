@@ -74,7 +74,7 @@ In the raw homicide data, there are `r nrow(homicide)` observations and `r ncol(
 ### Create new variables
 ```{r}
 homicide = homicide %>%
-  mutate(city_state = str_c(city, ",", state)) %>%
+  mutate(city_state = str_c(city, ", ", state)) %>%
   mutate(homicide_status = if_else(disposition == "Closed without arrest", "unsolved",
                                    if_else(disposition == "Open/No arrest", "unsolved",
                                            if_else(disposition == "Closed by arrest", "solved", NA_character_))))
@@ -82,6 +82,7 @@ homicide = homicide %>%
 homicide
 ```
 
+###Summarized table
 ```{r}
 homicide_table = homicide %>%
   group_by(city_state) %>%
@@ -92,6 +93,19 @@ homicide_table = homicide %>%
 homicide_table
 ```
 
+### In the city of Baltimore, MD
+```{r}
+Balto = homicide %>%
+  filter(city_state == "Baltimore, MD") %>%
+  summarise(total_homicide = n(),
+            number_unsolved = sum(homicide_status == "unsolved"))
+
+Balto_prop <- 
+  prop.test(Balto %>% pull(number_unsolved), Balto %>% pull(total_homicide))
+
+Balto_prop %>% broom::tidy() %>%
+  knitr::kable()
+```
 
 
 
