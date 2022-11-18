@@ -8,13 +8,14 @@ output: github_document
 
 ```{r}
 library(tidyverse)
+set.seed(1)
 ```
 
 ## Problem 1 (answer posted)
 
 The code chunk below imports the data in individual spreadsheets contained in `./data/zip_data/`. To do this, I create a dataframe that includes the list of all files in that directory and the complete path to each file. As a next step, I `map` over paths and import data using the `read_csv` function. Finally, I `unnest` the result of `map`.
 
-```{r}
+```{r, message=FALSE,warning=FALSE}
 full_df = 
   tibble(
     files = list.files("data/problem1_data/"),
@@ -93,7 +94,7 @@ homicide_table = homicide %>%
 homicide_table
 ```
 
-### In the city of Baltimore, MD
+### For the city of Baltimore, MD
 ```{r}
 Balto = homicide %>%
   filter(city_state == "Baltimore, MD") %>%
@@ -107,6 +108,31 @@ Balto_prop %>% broom::tidy() %>%
   knitr::kable()
 ```
 
+### For each of the cities
+```{r}
+proptest_function = function(df) {
+  summary = df %>% 
+    summarise(total_homicide = n(),
+              number_unsolved = sum(homicide_status == "unsolved"))
+              
+  cities_proptest = prop.test(summary %>% pull(number_unsolved), 
+                              summary %>% pull(total_homicide)) %>%
+    broom::tidy()
+  
+  cities_proptest
+}
+
+
+cities_final = homicide %>%
+  nest(data = -city_state) %>%
+  mutate(cities_test = map(data, proptest_function)) %>%
+  unnest(cities_test) %>%
+  select(city_state,estimate,starts_with('conf'))
+
+cities_final %>%
+  knitr::kable(col.names = c("City, State", "estimate","confidenceinterval_low","confidenceinterval_high"))
+  
+```
 
 
 
