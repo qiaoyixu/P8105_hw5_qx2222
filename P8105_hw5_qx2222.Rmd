@@ -134,6 +134,29 @@ cities_final %>%
   
 ```
 
+### Create plot
+```{r}
+plot_cities = cities_final %>%
+  mutate(city_state = fct_reorder(city_state, estimate)) %>%
+  ggplot(aes (x = city_state, y = estimate)) +
+  geom_point()+
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high))+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x = "City, State", y = "Estimates of unsolved homicide porpotion",
+       title = "Estimates and 95% CIs for each city")
+
+plot_cities #shows the estimates and 95% CIs for each city
+
+
+ggsave(
+  filename = "results/plot for each city.pdf",
+  plot = plot_cities,
+  width = 30,
+  height = 20,
+  units = "cm"
+  ) #export plot to 'results' directory
+
+```
 
 
 
