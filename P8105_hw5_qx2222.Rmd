@@ -83,7 +83,7 @@ homicide = homicide %>%
 homicide
 ```
 
-###Summarized table
+### Summarized table
 ```{r}
 homicide_table = homicide %>%
   group_by(city_state) %>%
@@ -134,7 +134,7 @@ cities_final %>%
   
 ```
 
-### Create plot
+### Create plot (shows the estimates and 95% CIs for each city)
 ```{r}
 plot_cities = cities_final %>%
   mutate(city_state = fct_reorder(city_state, estimate)) %>%
@@ -183,7 +183,7 @@ ttest_function = function(n = 30, sd = 5, mu = 0) {
 
 ```
 
-### Generate 5000 datasets from the model
+### Generate datasets use the function
 
 ```{r}
 prob3_df = 
@@ -242,7 +242,7 @@ mean_estimate_plot = prob3_diffmean %>%
   geom_path() +
   scale_x_continuous(breaks = 1:6)+
   labs(x = "true mean", y = "the average estimate",
-       title = "the true mean v.s. the average estimate")
+       title = "The true mean v.s. the average estimate")
 
 mean_estimate_plot
 
@@ -255,7 +255,7 @@ ggsave(
   ) #export plot to 'results' directory
 ```
 
-### make a second plot (the average estimate of μ̂  only in samples for which the null was rejected on the y axis and the true value of μ on the x axis)
+### Make a second plot (the average estimate of μ̂  only in samples for which the null was rejected on the y axis and the true value of μ on the x axis)
 
 ```{r}
 rejected = prob3_diffmean %>%
@@ -276,7 +276,7 @@ overlay_plot = ggplot(all_estimates, aes(x = mean, y = average_estimate)) +
                       values = c("orange" ="orange", "blue" = "blue"),
                       labels = c("All", "Rejected"))+
   labs(x = "true mean", y = "the average estimate",
-       title = "the true mean v.s. the average estimate")
+       title = "The true mean v.s. the average estimate")
   
 overlay_plot 
 
