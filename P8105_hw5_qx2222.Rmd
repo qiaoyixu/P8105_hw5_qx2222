@@ -62,23 +62,23 @@ This plot suggests high within-subject correlation -- subjects who start above a
 ### Import homicide data
 ```{r}
 homicide = read_csv("data/homicide-data.csv") #import 'homicide' data
-
-homicide
 ```
 
 
 ### Describe the raw data:
 
-In the raw homicide data, there are `r nrow(homicide)` observations and `r ncol(homicide)` variables. 
+In the raw homicide data, there are `r nrow(homicide)` observations and `r ncol(homicide)` variables,such as `r names(homicide)`. This dataset describe data on more than 52,000 criminal homicides over the past decade in 50 of the largest American cities.
 
 
 ### Create new variables
 ```{r}
 homicide = homicide %>%
   mutate(city_state = str_c(city, ", ", state)) %>%
+  filter(city_state!="Tulsa, AL") %>% #clear error data: Tulsa is not located in AL
   mutate(homicide_status = if_else(disposition == "Closed without arrest", "unsolved",
                                    if_else(disposition == "Open/No arrest", "unsolved",
                                            if_else(disposition == "Closed by arrest", "solved", NA_character_))))
+
 
 homicide
 ```
@@ -158,6 +158,10 @@ ggsave(
 
 ```
 
+This plot shows the estimates and CIs for each city and organize cities according to the proportion of unsolved homicides.
+
+
+
 ## Problem 3
 
 ### First set the following design elements:
@@ -222,8 +226,10 @@ ggsave(
   units = "cm"
   ) #export plot to 'results' directory
 ```
-Describe the association between effect size and power:
 
+### Describe the association between effect size and power:
+
+From the plot in output, we could see there is a increasing trend between the proportion of times the null was rejected and the true mean. Thus, there is a postive relationship between power and effect size. When the effect size increases, the power increases.
 
 
 ### Make a plot showing the average estimate of μ̂  on the y axis and the true value of μ on the x axis
@@ -268,7 +274,9 @@ overlay_plot = ggplot(all_estimates, aes(x = mean, y = average_estimate)) +
   geom_point(data = all_estimates, aes(color = "blue"))+
   scale_colour_manual(name = "",
                       values = c("orange" ="orange", "blue" = "blue"),
-                      labels = c("All", "Rejected"))
+                      labels = c("All", "Rejected"))+
+  labs(x = "true mean", y = "the average estimate",
+       title = "the true mean v.s. the average estimate")
   
 overlay_plot 
 
@@ -282,7 +290,10 @@ ggsave(
 ```
 
 
+### Answer questions:
+Is the sample average of μ̂  across tests for which the null is rejected approximately equal to the true value of μ? Why or why not?
 
+From the final overlay plot, we could conclude the sample average of μ̂  across tests for which the null is not approximately equal to the true value of μ. When the true mean is smaller than 4, the sample average estimates are very different with the true value. But then the true mean is between 4 and 6, the sample average estimates are more and more close to the true value. Because, when the effect size is small and the power is low, which makes fewer rejected samples and lower reject proportion. Thus, the average estimates are far away with the true value. On the contrary, when the effect size is big and the power is high, which makes more rejected samples and higher reject proportion. Thus, the average estimates are close to the true value.
 
 
 
